@@ -10,7 +10,7 @@ defmodule ExVCR.Adapter.HandlerStubModeTest do
   test "empty options works with default parameters" do
     use_cassette :stub, [] do
       {:ok, status_code, headers, body} = :ibrowse.send_req('http://localhost', [], :get)
-      assert status_code == '200'
+      assert status_code == ~c"200"
       assert List.keyfind(headers, 'Content-Type', 0) == {'Content-Type', 'text/html'}
       assert to_string(body) =~ ~r/Hello World/
     end
@@ -27,14 +27,14 @@ defmodule ExVCR.Adapter.HandlerStubModeTest do
   test "method name in atom works" do
     use_cassette :stub, [url: 'http://localhost', method: :post, request_body: 'param1=value1&param2=value2'] do
       {:ok, status_code, _headers, _body} = :ibrowse.send_req('http://localhost', [], :post, 'param1=value1&param2=value2')
-      assert status_code == '200'
+      assert status_code == ~c"200"
     end
   end
 
   test "url matches as regardless of query param order" do
     use_cassette :stub, [url: "http://localhost?param1=10&param2=20&param3=30"] do
       {:ok, status_code, _headers, body} = :ibrowse.send_req('http://localhost?param3=30&param1=10&param2=20', [], :get)
-      assert status_code == '200'
+      assert status_code == ~c"200"
       assert to_string(body) =~ ~r/Hello World/
     end
   end
@@ -42,7 +42,7 @@ defmodule ExVCR.Adapter.HandlerStubModeTest do
   test "url matches as regex" do
     use_cassette :stub, [url: "~r/.+/"] do
       {:ok, status_code, _headers, body} = :ibrowse.send_req('http://localhost', [], :get)
-      assert status_code == '200'
+      assert status_code == ~c"200"
       assert to_string(body) =~ ~r/Hello World/
     end
   end
@@ -50,7 +50,7 @@ defmodule ExVCR.Adapter.HandlerStubModeTest do
   test "request_body matches as string" do
     use_cassette :stub, [url: 'http://localhost', method: :post, request_body: "some-string", body: "Hello World"] do
       {:ok, status_code, _headers, body} = :ibrowse.send_req('http://localhost', [], :post, 'some-string')
-      assert status_code == '200'
+      assert status_code == ~c"200"
       assert to_string(body) =~ ~r/Hello World/
     end
   end
@@ -58,7 +58,7 @@ defmodule ExVCR.Adapter.HandlerStubModeTest do
   test "request_body matches as regex" do
     use_cassette :stub, [url: 'http://localhost', method: :post, request_body: "~r/param1/", body: "Hello World"] do
       {:ok, status_code, _headers, body} = :ibrowse.send_req('http://localhost', [], :post, 'param1=value1&param2=value2')
-      assert status_code == '200'
+      assert status_code == ~c"200"
       assert to_string(body) =~ ~r/Hello World/
     end
   end
@@ -74,7 +74,7 @@ defmodule ExVCR.Adapter.HandlerStubModeTest do
   test "request_body matches as unordered list of params" do
     use_cassette :stub, [url: 'http://localhost', method: :post, request_body: "param1=10&param3=30&param2=20", body: "Hello World"] do
       {:ok, status_code, _headers, body} = :ibrowse.send_req('http://localhost', [], :post, 'param2=20&param1=10&param3=30')
-      assert status_code == '200'
+      assert status_code == ~c"200"
       assert to_string(body) =~ ~r/Hello World/
     end
   end
@@ -86,7 +86,7 @@ defmodule ExVCR.Adapter.HandlerStubModeTest do
       end
     end
   end
-  
+
   test "request_body mismatch should raise error" do
     assert_raise ExVCR.InvalidRequestError, fn ->
       use_cassette :stub, [url: 'http://localhost', method: :post, request_body: '{"one" => 1}'] do

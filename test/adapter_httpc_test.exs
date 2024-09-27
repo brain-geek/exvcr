@@ -38,7 +38,7 @@ defmodule ExVCR.Adapter.HttpcTest do
 
   test "example httpc request/1" do
     use_cassette "example_httpc_request_1" do
-      {:ok, result} = :httpc.request('http://example.com')
+      {:ok, result} = :httpc.request(~c"http://example.com")
       {{http_version, _status_code = 200, reason_phrase}, headers, body} = result
       assert to_string(body) =~ ~r/Example Domain/
       assert http_version == 'HTTP/1.1'
@@ -49,7 +49,7 @@ defmodule ExVCR.Adapter.HttpcTest do
 
   test "example httpc request/4" do
     use_cassette "example_httpc_request_4" do
-      {:ok, {{_, 200, _reason_phrase}, _headers, body}} = :httpc.request(:get, {'http://example.com', ''}, '', '')
+      {:ok, {{_, 200, _reason_phrase}, _headers, body}} = :httpc.request(:get, {~c"http://example.com", ''}, '', '')
       assert to_string(body) =~ ~r/Example Domain/
     end
   end
@@ -58,7 +58,7 @@ defmodule ExVCR.Adapter.HttpcTest do
     use_cassette "example_httpc_request_4_additional_options" do
       {:ok, {{_, 200, _reason_phrase}, _headers, body}} = :httpc.request(
         :get,
-        {'http://example.com', [{'Content-Type', 'text/html'}]},
+        {~c"http://example.com", [{'Content-Type', 'text/html'}]},
         [connect_timeout: 3000, timeout: 5000],
         body_format: :binary)
       assert to_string(body) =~ ~r/Example Domain/
@@ -73,8 +73,8 @@ defmodule ExVCR.Adapter.HttpcTest do
   end
 
   test "stub request works" do
-    use_cassette :stub, [url: 'http://example.com', body: 'Stub Response'] do
-      {:ok, result} = :httpc.request('http://example.com')
+    use_cassette :stub, [url: ~c"http://example.com", body: 'Stub Response'] do
+      {:ok, result} = :httpc.request(~c"http://example.com")
       {{_http_version, _status_code = 200, _reason_phrase}, headers, body} = result
       assert to_string(body) =~ ~r/Stub Response/
       assert List.keyfind(headers, 'content-type', 0) == {'content-type', 'text/html'}

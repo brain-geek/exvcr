@@ -77,8 +77,8 @@ defmodule ExVCR.Adapter.IBrowseTest do
   test "example single request" do
     use_cassette "example_ibrowse" do
       :ibrowse.start
-      {:ok, status_code, _headers, body} = :ibrowse.send_req('http://example.com', [], :get)
-      assert status_code == '200'
+      {:ok, status_code, _headers, body} = :ibrowse.send_req(~c"http://example.com", [], :get)
+      assert status_code == ~c"200"
       assert to_string(body) =~ ~r/Example Domain/
     end
   end
@@ -126,7 +126,7 @@ defmodule ExVCR.Adapter.HttpcTest do
 
   test "get request" do
     use_cassette "example_httpc_request" do
-      {:ok, result} = :httpc.request('http://example.com')
+      {:ok, result} = :httpc.request(~c"http://example.com")
       {{_http_version, _status_code = 200, _reason_phrase}, _headers, body} = result
       assert to_string(body) =~ ~r/Example Domain/
     end
@@ -625,7 +625,7 @@ Interactive Elixir (0.12.5) - press Ctrl+C to exit (type h() ENTER for help)
 iex(1)> require ExVCR.IEx
 nil
 iex(2)> ExVCR.IEx.print do
-...(2)>   :ibrowse.send_req('http://example.com', [], :get)
+...(2)>   :ibrowse.send_req(~c"http://example.com", [], :get)
 ...(2)> end
 [
   {
@@ -692,7 +692,7 @@ test "stub request works for httpc" do
                        status_code: ["HTTP/1.1", 200, "OK"],
                        body: "success!"] do
 
-  {:ok, result} = :httpc.request('http://example.com')
+  {:ok, result} = :httpc.request(~c"http://example.com")
   {{_http_version, _status_code = 200, _reason_phrase}, _headers, body} = result
   assert to_string(body) == "success!"
 end
