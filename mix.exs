@@ -15,6 +15,7 @@ defmodule ExVCR.Mixfile do
       description: description(),
       package: package(),
       test_coverage: [tool: ExCoveralls],
+      prune_code_paths: false,
       preferred_cli_env: [coveralls: :test]
     ]
   end
